@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- TEMPLATE: Update description for each post -->
+    <meta name="description" content="YOUR_POST_DESCRIPTION_HERE" />
+    <meta name="author" content="S. Rikhi Ram" />
+    <!-- TEMPLATE: Update title for each post -->
+    <title>YOUR_POST_TITLE — S. Rikhi Ram</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/img/rikhi-avatar.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.5.1/js/all.js" crossorigin="anonymous"></script>
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../css/blog.css" rel="stylesheet" />
+    <meta name="base-path" content="../" />
+</head>
+
+<body id="page-top">
+    <canvas id="particleCanvas"></canvas>
+    <div class="gradient-orb orb-1"></div>
+
+    <!-- Navigation (loaded from components/header.html) -->
+    <div id="header-placeholder"></div>
+
+    <!-- TEMPLATE: Post Header — update category, title, date, read time -->
+    <div class="blog-post-hero">
+        <div class="container">
+            <a href="./" class="blog-post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="blog-post-category">CATEGORY_HERE</span>
+            <h1 class="blog-post-title">YOUR_POST_TITLE_HERE</h1>
+            <div class="blog-post-meta">
+                <div class="blog-post-author">
+                    <div class="blog-post-author-avatar">R</div>
+                    <span>S. Rikhi Ram</span>
+                </div>
+                <span><i class="far fa-calendar"></i> MONTH DD, YYYY</span>
+                <span><i class="far fa-clock"></i> X min read</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEMPLATE: Post Body — write your article content here -->
+    <article class="blog-post-body">
+        <div class="container">
+
+            <p>Opening paragraph that hooks the reader and summarizes what this article covers.</p>
+
+            <h2>First Major Section</h2>
+
+            <p>Your content here. Supports all standard elements:</p>
+
+            <ul>
+                <li><strong>Bold list items</strong> with descriptions</li>
+                <li>Regular list items</li>
+            </ul>
+
+            <h3>Subsection</h3>
+
+            <p>More detailed content with inline <code>code snippets</code>.</p>
+
+            <blockquote>
+                <p>A compelling quote or key takeaway to highlight.</p>
+            </blockquote>
+
+            <pre><code>// Code blocks for longer examples
+fn example() {
+    println!("Hello, world!");
+}</code></pre>
+
+            <h2>Second Major Section</h2>
+
+            <ol>
+                <li>Numbered list item one</li>
+                <li>Numbered list item two</li>
+            </ol>
+
+            <p>Closing paragraph with a call to action or summary.</p>
+
+            <!-- TEMPLATE: Update tags for each post -->
+            <div class="blog-post-tags">
+                <a href="#!">Tag1</a>
+                <a href="#!">Tag2</a>
+                <a href="#!">Tag3</a>
+            </div>
+
+            <!-- TEMPLATE: Update prev/next links -->
+            <div class="blog-post-nav">
+                <a href="previous-post-slug.html">
+                    <span>← Previous Article</span>
+                    <span>Previous Post Title</span>
+                </a>
+                <a href="next-post-slug.html" class="next">
+                    <span>Next Article →</span>
+                    <span>Next Post Title</span>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer (loaded from components/footer.html) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+
+</html>

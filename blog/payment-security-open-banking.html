@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description"
+        content="A deep dive into securing CBPR+ and Swift payment flows while maintaining compliance with global standards." />
+    <meta name="author" content="S. Rikhi Ram" />
+    <title>Payment Security in the Age of Open Banking — S. Rikhi Ram</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/img/rikhi-avatar.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.5.1/js/all.js" crossorigin="anonymous"></script>
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../css/blog.css" rel="stylesheet" />
+    <meta name="base-path" content="../" />
+</head>
+
+<body id="page-top">
+    <canvas id="particleCanvas"></canvas>
+    <div class="gradient-orb orb-1"></div>
+
+    <!-- Navigation (loaded from components/header.html) -->
+    <div id="header-placeholder"></div>
+
+    <div class="blog-post-hero">
+        <div class="container">
+            <a href="./" class="blog-post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="blog-post-category">FinTech</span>
+            <h1 class="blog-post-title">Payment Security in the Age of Open Banking</h1>
+            <div class="blog-post-meta">
+                <div class="blog-post-author">
+                    <div class="blog-post-author-avatar">R</div>
+                    <span>S. Rikhi Ram</span>
+                </div>
+                <span><i class="far fa-calendar"></i> Jan 28, 2026</span>
+                <span><i class="far fa-clock"></i> 6 min read</span>
+            </div>
+        </div>
+    </div>
+
+    <article class="blog-post-body">
+        <div class="container">
+
+            <p>Open Banking is reshaping the financial landscape, enabling third-party providers to access banking data
+                and initiate payments through standardized APIs. But with this openness comes a critical responsibility:
+                ensuring every transaction is secure, authenticated, and compliant.</p>
+
+            <h2>The Open Banking Landscape</h2>
+
+            <p>Regulations like PSD2 in Europe, the UK's Open Banking Standard, and India's Account Aggregator framework
+                are driving banks to expose APIs. These APIs allow Account Information Service Providers (AISPs) and
+                Payment Initiation Service Providers (PISPs) to interact with customer accounts — with consent.</p>
+
+            <p>The challenge? Securing these interactions across:</p>
+
+            <ul>
+                <li><strong>CBPR+ (Cross-Border Payments and Reporting Plus)</strong> — the SWIFT migration to ISO 20022
+                </li>
+                <li><strong>SWIFT gpi</strong> — tracking cross-border payments end-to-end</li>
+                <li><strong>Domestic instant payment rails</strong> — UPI, Faster Payments, SEPA Instant</li>
+                <li><strong>API-driven payment initiation</strong> — via Open Banking APIs</li>
+            </ul>
+
+            <h2>Security Layers in Payment Processing</h2>
+
+            <p>A robust payment security architecture operates at multiple layers. Each layer must be independently
+                secure, creating defense in depth.</p>
+
+            <h3>1. Transport Security</h3>
+
+            <p>mTLS (mutual TLS) is non-negotiable for payment APIs. Both client and server authenticate each other
+                using digital certificates. This prevents man-in-the-middle attacks and ensures only authorized parties
+                can communicate.</p>
+
+            <pre><code># Example: mTLS configuration for payment API gateway
+server:
+  ssl:
+    enabled: true
+    client-auth: need
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    trust-store: classpath:truststore.p12
+    trust-store-type: PKCS12</code></pre>
+
+            <h3>2. Message-Level Security</h3>
+
+            <p>Beyond transport encryption, individual payment messages must be signed. In SWIFT, this uses PKI-based
+                signatures. For Open Banking APIs, JWS (JSON Web Signature) ensures message integrity.</p>
+
+            <blockquote>
+                <p>The principle is simple: even if an attacker compromises the transport layer, they cannot forge or
+                    tamper with individual payment instructions.</p>
+            </blockquote>
+
+            <h3>3. Strong Customer Authentication (SCA)</h3>
+
+            <p>PSD2 mandates SCA for payment initiation — requiring at least two of: something you know (password),
+                something you have (phone), and something you are (biometric). This dramatically reduces unauthorized
+                payment fraud.</p>
+
+            <h2>CBPR+ and ISO 20022 Migration</h2>
+
+            <p>The SWIFT network is undergoing its largest transformation in decades — migrating from MT (Message Type)
+                to MX (ISO 20022) format. This migration, known as CBPR+, introduces richer, structured data but also
+                new security considerations:</p>
+
+            <ol>
+                <li><strong>Richer data means larger attack surface</strong> — more fields to validate and sanitize</li>
+                <li><strong>Coexistence period</strong> — running MT and MX in parallel creates translation
+                    vulnerabilities</li>
+                <li><strong>Sanctions screening complexity</strong> — structured names and addresses enable better
+                    screening but require updated rules</li>
+            </ol>
+
+            <h2>Best Practices</h2>
+
+            <p>From years of building payment systems, here are patterns that consistently improve security posture:</p>
+
+            <ul>
+                <li><strong>Idempotency keys</strong> — prevent duplicate payment processing from retries</li>
+                <li><strong>Cryptographic audit trails</strong> — hash-chained logs that are tamper-evident</li>
+                <li><strong>Rate limiting with context</strong> — adaptive limits based on user behavior patterns</li>
+                <li><strong>Zero-trust architecture</strong> — verify every request, even internal service-to-service
+                    calls</li>
+                <li><strong>Tokenization</strong> — never store raw account numbers; use tokenized references</li>
+            </ul>
+
+            <p>Security in FinTech isn't a feature — it's the foundation. Every architecture decision, every line of
+                code, must be made with the assumption that adversaries are watching.</p>
+
+            <div class="blog-post-tags">
+                <a href="#!">FinTech</a>
+                <a href="#!">Security</a>
+                <a href="#!">Open Banking</a>
+                <a href="#!">CBPR+</a>
+                <a href="#!">SWIFT</a>
+                <a href="#!">ISO 20022</a>
+            </div>
+
+            <div class="blog-post-nav">
+                <a href="building-resilient-microservices-with-rust.html">
+                    <span>← Previous Article</span>
+                    <span>Building Resilient Microservices with Rust</span>
+                </a>
+                <a href="zero-downtime-kubernetes-migration.html" class="next">
+                    <span>Next Article →</span>
+                    <span>Zero-Downtime Migrations to Kubernetes</span>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer (loaded from components/footer.html) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description"
+        content="Strategies for migrating legacy monoliths to cloud-native Kubernetes clusters without impacting production uptime." />
+    <meta name="author" content="S. Rikhi Ram" />
+    <title>Zero-Downtime Migrations to Kubernetes — S. Rikhi Ram</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/img/rikhi-avatar.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.5.1/js/all.js" crossorigin="anonymous"></script>
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../css/blog.css" rel="stylesheet" />
+    <meta name="base-path" content="../" />
+</head>
+
+<body id="page-top">
+    <canvas id="particleCanvas"></canvas>
+    <div class="gradient-orb orb-1"></div>
+
+    <!-- Navigation (loaded from components/header.html) -->
+    <div id="header-placeholder"></div>
+
+    <div class="blog-post-hero">
+        <div class="container">
+            <a href="./" class="blog-post-back"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <span class="blog-post-category">Cloud</span>
+            <h1 class="blog-post-title">Zero-Downtime Migrations to Kubernetes</h1>
+            <div class="blog-post-meta">
+                <div class="blog-post-author">
+                    <div class="blog-post-author-avatar">R</div>
+                    <span>S. Rikhi Ram</span>
+                </div>
+                <span><i class="far fa-calendar"></i> Jan 15, 2026</span>
+                <span><i class="far fa-clock"></i> 10 min read</span>
+            </div>
+        </div>
+    </div>
+
+    <article class="blog-post-body">
+        <div class="container">
+
+            <p>Migrating a production monolith to Kubernetes is one of the most impactful — and risky — infrastructure
+                transformations an engineering team can undertake. Done poorly, it leads to extended outages and
+                frustrated users. Done right, it unlocks a new level of scalability, resilience, and deployment
+                velocity.</p>
+
+            <p>Here's a battle-tested strategy for achieving zero-downtime migration.</p>
+
+            <h2>Phase 1: Containerize Without Migrating</h2>
+
+            <p>The first mistake teams make is trying to containerize and migrate simultaneously. Instead, containerize
+                your application first and deploy it alongside the existing infrastructure.</p>
+
+            <pre><code># Dockerfile for a Spring Boot monolith
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+COPY target/application.jar app.jar
+
+# Health check for K8s readiness probes
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+  CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
+
+            <p>Run the containerized version in parallel with production. Route a small percentage of traffic to it
+                using weighted load balancing. This validates that the container behaves identically to the bare-metal
+                deployment.</p>
+
+            <h2>Phase 2: The Strangler Fig Pattern</h2>
+
+            <p>Rather than migrating everything at once, use the Strangler Fig pattern — gradually extract services and
+                route traffic to them. Start with the least critical components.</p>
+
+            <blockquote>
+                <p>The strangler fig grows around a host tree until it eventually replaces it entirely. Your new
+                    microservices should grow around the monolith the same way.</p>
+            </blockquote>
+
+            <p>Identify bounded contexts within your monolith. Extract them one by one:</p>
+
+            <ol>
+                <li><strong>Identify the boundary</strong> — find a module with clear inputs/outputs and minimal shared
+                    state</li>
+                <li><strong>Create the new service</strong> — build it as a standalone K8s deployment</li>
+                <li><strong>Proxy traffic</strong> — use an API gateway to route requests to the new service</li>
+                <li><strong>Validate in shadow mode</strong> — run both old and new in parallel, comparing outputs</li>
+                <li><strong>Cut over</strong> — once confidence is high, route 100% to the new service</li>
+            </ol>
+
+            <h2>Phase 3: Kubernetes Deployment Strategy</h2>
+
+            <p>For zero-downtime deployments within Kubernetes, configure your deployments correctly:</p>
+
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0      # Never take a pod down before a new one is ready
+      maxSurge: 1             # Add one pod before removing old ones
+  template:
+    spec:
+      containers:
+      - name: payment-service
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 15"]  # Graceful drain</code></pre>
+
+            <h3>Critical Configuration Points</h3>
+
+            <ul>
+                <li><strong>maxUnavailable: 0</strong> — ensures a new pod is fully ready before old ones shut down</li>
+                <li><strong>Readiness probes</strong> — prevent traffic from reaching pods that aren't ready to serve
+                </li>
+                <li><strong>preStop hook</strong> — allows in-flight requests to complete before pod termination</li>
+                <li><strong>PodDisruptionBudgets</strong> — protect against accidentally destroying too many pods during
+                    node upgrades</li>
+            </ul>
+
+            <h2>Phase 4: Database Migration</h2>
+
+            <p>The hardest part is the database. Stateless services are easy to migrate — stateful components require
+                careful planning:</p>
+
+            <ul>
+                <li><strong>Read replicas first</strong> — point new services to read replicas; keep writes on the
+                    original database</li>
+                <li><strong>Change Data Capture (CDC)</strong> — use tools like Debezium to stream changes between
+                    databases</li>
+                <li><strong>Feature flags</strong> — toggle between old and new data paths without deployments</li>
+                <li><strong>Dual-write with reconciliation</strong> — write to both databases and reconcile differences
+                </li>
+            </ul>
+
+            <h2>Monitoring the Migration</h2>
+
+            <p>You cannot migrate what you cannot measure. Before starting, establish comprehensive observability:</p>
+
+            <ul>
+                <li><strong>Golden signals</strong> — latency, traffic, errors, saturation for every service</li>
+                <li><strong>Distributed tracing</strong> — correlate requests across old and new infrastructure</li>
+                <li><strong>Dashboards</strong> — real-time comparison of old vs. new system performance</li>
+                <li><strong>Automated rollback</strong> — if error rate exceeds thresholds, automatically route back to
+                    the old system</li>
+            </ul>
+
+            <p>Zero-downtime migration isn't a single event — it's a process. Take it slow, measure everything, and
+                always have a rollback plan.</p>
+
+            <div class="blog-post-tags">
+                <a href="#!">Kubernetes</a>
+                <a href="#!">Cloud Migration</a>
+                <a href="#!">DevOps</a>
+                <a href="#!">Docker</a>
+                <a href="#!">Microservices</a>
+            </div>
+
+            <div class="blog-post-nav">
+                <a href="payment-security-open-banking.html">
+                    <span>← Previous Article</span>
+                    <span>Payment Security in the Age of Open Banking</span>
+                </a>
+                <div></div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer (loaded from components/footer.html) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+
+</html>

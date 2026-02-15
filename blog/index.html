@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description"
+        content="Blog — Thoughts on engineering, architecture, and lessons from the trenches by S. Rikhi Ram." />
+    <meta name="author" content="S. Rikhi Ram" />
+    <title>Blog — S. Rikhi Ram</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/img/rikhi-avatar.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.5.1/js/all.js" crossorigin="anonymous"></script>
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../css/blog.css" rel="stylesheet" />
+    <meta name="base-path" content="../" />
+</head>
+
+<body id="page-top">
+    <canvas id="particleCanvas"></canvas>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <!-- Navigation (loaded from components/header.html) -->
+    <div id="header-placeholder"></div>
+
+    <!-- Blog Hero -->
+    <div class="blog-hero">
+        <span class="section-tag">Blog</span>
+        <h1>Latest <span class="text-gradient">Insights</span></h1>
+        <p>Thoughts on engineering, architecture, and lessons learned while building scalable systems.</p>
+    </div>
+
+    <!-- Blog Listing -->
+    <div class="blog-listing">
+        <div class="container">
+            <div class="blog-list-grid">
+
+                <!-- Featured Post -->
+                <article class="blog-card-featured animate-on-scroll">
+                    <div class="blog-image">
+                        <div class="blog-image-placeholder">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <span class="blog-category">Architecture</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> Feb 10, 2026</span>
+                            <span><i class="far fa-clock"></i> 8 min read</span>
+                        </div>
+                        <h3>Building Resilient Microservices with Rust</h3>
+                        <p>Exploring how Rust's ownership model enables building zero-cost, fault-tolerant distributed
+                            services that handle millions of requests per second.</p>
+                        <a href="building-resilient-microservices-with-rust.html" class="blog-link">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="blog-card animate-on-scroll">
+                    <div class="blog-image">
+                        <div class="blog-image-placeholder">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <span class="blog-category">FinTech</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> Jan 28, 2026</span>
+                            <span><i class="far fa-clock"></i> 6 min read</span>
+                        </div>
+                        <h3>Payment Security in the Age of Open Banking</h3>
+                        <p>A deep dive into securing CBPR+ and Swift payment flows while maintaining compliance with
+                            global standards.</p>
+                        <a href="payment-security-open-banking.html" class="blog-link">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Post 3 -->
+                <article class="blog-card animate-on-scroll">
+                    <div class="blog-image">
+                        <div class="blog-image-placeholder">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <span class="blog-category">Cloud</span>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> Jan 15, 2026</span>
+                            <span><i class="far fa-clock"></i> 10 min read</span>
+                        </div>
+                        <h3>Zero-Downtime Migrations to Kubernetes</h3>
+                        <p>Strategies for migrating legacy monoliths to cloud-native K8s clusters without impacting
+                            production uptime.</p>
+                        <a href="zero-downtime-kubernetes-migration.html" class="blog-link">
+                            Read Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (loaded from components/footer.html) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+
+</html>
