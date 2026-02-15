@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Bitcoin: A Peer-to-Peer Electronic Cash System",
+        "author": "Satoshi Nakamoto",
+        "category": "Blockchain",
+        "date": "2008-10-31",
+        "imageIcon": "fab fa-bitcoin",
+        "excerpt": "The foundational paper introducing Bitcoin and the concept of decentralized consensus via Proof of Work.",
+        "link": "https://bitcoin.org/bitcoin.pdf"
+    },
+    {
+        "title": "Dynamo: Amazon's Highly Available Key-value Store",
+        "author": "DeCandia et al.",
+        "category": "Distributed Systems",
+        "date": "2007-10-14",
+        "imageIcon": "fas fa-server",
+        "excerpt": "Introduces the architectural principles of eventual consistency and consistent hashing used in NoSQL databases.",
+        "link": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf"
+    },
+    {
+        "title": "Attention Is All You Need",
+        "author": "Vaswani et al.",
+        "category": "AI/ML",
+        "date": "2017-06-12",
+        "imageIcon": "fas fa-brain",
+        "excerpt": "The seminal paper that introduced the Transformer architecture, revolutionizing natural language processing.",
+        "link": "https://arxiv.org/abs/1706.03762"
+    }
+]

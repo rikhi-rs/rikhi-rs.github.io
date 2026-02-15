@@ -4,10 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description"
-        content="Blog — Thoughts on engineering, architecture, and lessons from the trenches by S. Rikhi Ram." />
+    <meta name="description" content="PaperShelf — Academic papers and research articles explored by S. Rikhi Ram." />
     <meta name="author" content="S. Rikhi Ram" />
-    <title>Blog — S. Rikhi Ram</title>
+    <title>PaperShelf — S. Rikhi Ram</title>
     <link rel="icon" type="image/svg+xml" href="../assets/img/rikhi-avatar.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,24 +27,22 @@
     <!-- Navigation (loaded from components/header.html) -->
     <div id="header-placeholder"></div>
 
-    <!-- Blog Hero -->
+    <!-- Papers Hero -->
     <div class="blog-hero">
-        <span class="section-tag">Blog</span>
-        <h1>Latest <span class="text-gradient">Insights</span></h1>
-        <p>Thoughts on engineering, architecture, and lessons learned while building scalable systems.</p>
+        <span class="section-tag">Research</span>
+        <h1>My <span class="text-gradient">Papershelf</span></h1>
+        <p>Exploring foundational and cutting-edge research in computer science.</p>
     </div>
 
-    <!-- Blog Listing -->
+    <!-- Papers Listing -->
     <div class="blog-listing">
         <div class="container">
-            <div class="blog-list-grid" id="blog-list-container">
-                <!-- Blog posts will be loaded here dynamically -->
+            <div class="blog-list-grid" id="paper-list-container">
+                <!-- Papers will be loaded here dynamically -->
             </div>
 
             <!-- Pagination -->
-            <div class="pagination-container" id="pagination-controls">
-                <!-- Pagination buttons will be loaded here -->
-            </div>
+            <div class="pagination-container" id="pagination-controls"></div>
         </div>
     </div>
 
@@ -57,7 +54,7 @@
     <script src="../js/list-loader.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            loadList('blog-list-container', 'pagination-controls', '../data/blogs.json', 3, 'blog');
+            loadList('paper-list-container', 'pagination-controls', '../data/papers.json', 5, 'paper');
         });
     </script>
 </body>

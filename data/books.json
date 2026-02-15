@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Designing Data-Intensive Applications",
+        "author": "Martin Kleppmann",
+        "category": "Architecture",
+        "date": "2025-11-20",
+        "status": "Read",
+        "imageIcon": "fas fa-database",
+        "excerpt": "The definitive guide to distributed systems, covering data models, replication, partitioning, and consistency.",
+        "link": "#"
+    },
+    {
+        "title": "Rust for Rustaceans",
+        "author": "Jon Gjengset",
+        "category": "Rust",
+        "date": "2026-01-05",
+        "status": "Reading",
+        "imageIcon": "fab fa-rust",
+        "excerpt": "Deep dive into advanced Rust concepts, including Unsafe Rust, concurrency, and macros.",
+        "link": "#"
+    },
+    {
+        "title": "Clean Architecture",
+        "author": "Robert C. Martin",
+        "category": "Design",
+        "date": "2024-08-15",
+        "status": "Read",
+        "imageIcon": "fas fa-layer-group",
+        "excerpt": "A craftsman's guide to software structure and design, emphasizing separation of concerns.",
+        "link": "#"
+    }
+]

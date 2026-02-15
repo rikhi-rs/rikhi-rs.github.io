@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Building Resilient Microservices with Rust",
+        "category": "Architecture",
+        "date": "2026-02-10",
+        "readTime": "8 min read",
+        "imageIcon": "fas fa-microchip",
+        "excerpt": "Exploring how Rust's ownership model enables building zero-cost, fault-tolerant distributed services that handle millions of requests per second.",
+        "link": "building-resilient-microservices-with-rust.html"
+    },
+    {
+        "title": "Payment Security in the Age of Open Banking",
+        "category": "FinTech",
+        "date": "2026-01-28",
+        "readTime": "6 min read",
+        "imageIcon": "fas fa-shield-halved",
+        "excerpt": "A deep dive into securing CBPR+ and Swift payment flows while maintaining compliance with global standards.",
+        "link": "payment-security-open-banking.html"
+    },
+    {
+        "title": "Zero-Downtime Migrations to Kubernetes",
+        "category": "Cloud",
+        "date": "2026-01-15",
+        "readTime": "10 min read",
+        "imageIcon": "fas fa-cloud",
+        "excerpt": "Strategies for migrating legacy monoliths to cloud-native K8s clusters without impacting production uptime.",
+        "link": "zero-downtime-kubernetes-migration.html"
+    }
+]
