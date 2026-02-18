@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initCounters();
   initSkillBars();
+  initThemeToggle();
   initScrollTop();
   initSmoothScroll();
 });
@@ -49,7 +50,12 @@ function initParticles() {
     draw() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(52, 211, 153, ${this.opacity})`;
+      const isBW = document.documentElement.getAttribute('data-theme') === 'bw';
+      // Green-500 (#10b981) or White (#ffffff)
+      const r = isBW ? 255 : 16;
+      const g = isBW ? 255 : 185;
+      const b = isBW ? 255 : 129;
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
       ctx.fill();
     }
   }
@@ -58,6 +64,11 @@ function initParticles() {
   for (let i = 0; i < count; i++) particles.push(new Particle());
 
   function connectParticles() {
+    const isBW = document.documentElement.getAttribute('data-theme') === 'bw';
+    const r = isBW ? 255 : 16;
+    const g = isBW ? 255 : 185;
+    const b = isBW ? 255 : 129;
+
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
@@ -67,7 +78,7 @@ function initParticles() {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(52, 211, 153, ${0.04 * (1 - dist / 130)})`;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.04 * (1 - dist / 130)})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -232,5 +243,43 @@ function initSmoothScroll() {
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
     });
+  });
+}
+
+/* ---------- THEME TOGGLE ---------- */
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('themeToggle');
+  if (!toggleBtn) return;
+  const icon = toggleBtn.querySelector('i');
+
+  // Check persisted theme
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'bw') {
+    document.documentElement.setAttribute('data-theme', 'bw');
+    if (icon) icon.className = 'fas fa-sun'; // Show sun to toggle back to light/green
+  } else {
+    if (icon) icon.className = 'fas fa-moon'; // Show moon to toggle to dark/bw (conceptually)
+    // Actually, the original theme is Green/Dark. 
+    // Maybe 'bw' is "Monochrome Mode" and default is "Color Mode".
+    // Icon: Color Mode -> Palette icon? Or Moon for dark?
+    // Let's use:
+    // Default (Green): Moon icon (current state)
+    // BW: Sun icon (or something else)
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const isBW = document.documentElement.getAttribute('data-theme') === 'bw';
+
+    if (isBW) {
+      // Switch back to Default
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'default');
+      if (icon) icon.className = 'fas fa-moon';
+    } else {
+      // Switch to BW
+      document.documentElement.setAttribute('data-theme', 'bw');
+      localStorage.setItem('theme', 'bw');
+      if (icon) icon.className = 'fas fa-sun';
+    }
   });
 }
