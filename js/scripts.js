@@ -5,14 +5,17 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initParticles();
-  initNavbar();
-  initMobileMenu();
   initScrollAnimations();
   initCounters();
   initSkillBars();
-  initThemeToggle();
   initScrollTop();
   initSmoothScroll();
+});
+
+document.addEventListener('components-loaded', () => {
+  initNavbar();
+  initMobileMenu();
+  initThemeToggle();
 });
 
 /* ---------- PARTICLES ---------- */
