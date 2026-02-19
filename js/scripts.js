@@ -4,7 +4,7 @@
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initParticles();
+  initGameOfLife();
   initScrollAnimations();
   initCounters();
   initSkillBars();
@@ -18,84 +18,113 @@ document.addEventListener('components-loaded', () => {
   initThemeToggle();
 });
 
-/* ---------- PARTICLES ---------- */
-function initParticles() {
+/* ---------- GAME OF LIFE BACKGROUND ---------- */
+function initGameOfLife() {
   const canvas = document.getElementById('particleCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let particles = [];
 
+  // Configuration
+  const cellSize = 8; // Size of each cell in pixels
+  let cols, rows;
+  let grid;
+
+  // Colors
+  const COLOR_DEFAULT = 'rgba(16, 185, 129, 0.15)'; // Greenish low opacity
+  const COLOR_BW = 'rgba(255, 255, 255, 0.1)';      // White low opacity
+
+  // Initialize
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  class Particle {
-    constructor() {
-      this.reset();
-    }
-    reset() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.vx = (Math.random() - 0.5) * 0.25;
-      this.vy = (Math.random() - 0.5) * 0.25;
-      this.radius = Math.random() * 1.2 + 0.3;
-      this.opacity = Math.random() * 0.35 + 0.05;
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      const isBW = document.documentElement.getAttribute('data-theme') === 'bw';
-      // Green-500 (#10b981) or White (#ffffff)
-      const r = isBW ? 255 : 16;
-      const g = isBW ? 255 : 185;
-      const b = isBW ? 255 : 129;
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
-      ctx.fill();
-    }
+    cols = Math.ceil(canvas.width / cellSize);
+    rows = Math.ceil(canvas.height / cellSize);
+    grid = createGrid();
   }
 
-  const count = Math.min(60, Math.floor(window.innerWidth / 20));
-  for (let i = 0; i < count; i++) particles.push(new Particle());
+  function createGrid() {
+    const newGrid = new Array(cols).fill(null).map(() => new Array(rows).fill(0));
+    // Randomize
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        newGrid[i][j] = Math.random() > 0.85 ? 1 : 0; // 15% chance of being alive
+      }
+    }
+    return newGrid;
+  }
 
-  function connectParticles() {
+  // Game Logic
+  function updateGrid() {
+    const nextGrid = new Array(cols).fill(null).map(() => new Array(rows).fill(0));
+
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        const state = grid[i][j];
+
+        // Count live neighbors
+        let neighbors = 0;
+        for (let x = -1; x <= 1; x++) {
+          for (let y = -1; y <= 1; y++) {
+            if (x === 0 && y === 0) continue;
+            const col = (i + x + cols) % cols;
+            const row = (j + y + rows) % rows;
+            neighbors += grid[col][row];
+          }
+        }
+
+        // Apply Rules
+        if (state === 0 && neighbors === 3) {
+          nextGrid[i][j] = 1; // Birth
+        } else if (state === 1 && (neighbors < 2 || neighbors > 3)) {
+          nextGrid[i][j] = 0; // Death
+        } else {
+          nextGrid[i][j] = state; // Survival
+        }
+      }
+    }
+    grid = nextGrid;
+  }
+
+  function draw() {
+    // Clear with transparent rect to avoid trails, or allow slight trails?
+    // Standard Game of Life clears the screen.
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const isBW = document.documentElement.getAttribute('data-theme') === 'bw';
-    const r = isBW ? 255 : 16;
-    const g = isBW ? 255 : 185;
-    const b = isBW ? 255 : 129;
+    ctx.fillStyle = isBW ? COLOR_BW : COLOR_DEFAULT;
 
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 130) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.04 * (1 - dist / 130)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        if (grid[i][j] === 1) {
+          ctx.fillRect(i * cellSize, j * cellSize, cellSize - 1, cellSize - 1);
         }
       }
     }
   }
 
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    connectParticles();
+  // Animation Loop
+  let lastTime = 0;
+  const fps = 15; // Slow down simulation speed for better visual
+  const interval = 1000 / fps;
+
+  function animate(timeStamp) {
+    const deltaTime = timeStamp - lastTime;
+
+    if (deltaTime > interval) {
+      lastTime = timeStamp - (deltaTime % interval);
+      updateGrid();
+      draw();
+    }
+
     requestAnimationFrame(animate);
   }
-  animate();
+
+  // Event Listeners
+  window.addEventListener('resize', resize);
+
+  // Start
+  resize();
+  requestAnimationFrame(animate);
 }
 
 /* ---------- NAVBAR ---------- */
